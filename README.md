@@ -1,8 +1,3 @@
-Perfect, Sammy! Here's your updated and polished `README.md` file for your project **SmaartCommit** — an AI-powered commit suggestion middleware for GitHub PRs.
-
----
-
-### 📄 `README.md` — for `SmaartCommit`
 
 ```markdown
 # 🤖 SmaartCommit
