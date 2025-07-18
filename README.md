@@ -1,147 +1,176 @@
 
-# 🤖 SmaartCommit
+# SmartCommit – AI Suggestions on Pull Requests
 
-> ✨ _"Smarter Commits. Cleaner Code."_
+SmartCommit is a system that listens to GitHub Pull Request (PR) events, sends the PR details (title & description) to an AI backend, and posts AI-generated review suggestions as a comment on the PR automatically.
 
-**SmaartCommit** is an AI-powered GitHub middleware that listens to Pull Request events and generates clear, meaningful commit message suggestions using **LangChain** and **Groq LLMs**.
-
----
-
-## 🚀 What It Does
-
-Whenever a developer opens or updates a Pull Request, SmaartCommit:
-
-1. Receives the webhook via a Flask backend  
-2. Parses the PR title and description  
-3. Sends it to Groq LLM using LangChain  
-4. Posts a suggested commit message back as a comment on the PR
+This solution was built for a Hackathon.
 
 ---
 
-## 🛠️ Tech Stack
-
-| Layer         | Technology                |
-| ------------- | ------------------------- |
-| Backend       | Python, Flask             |
-| AI Engine     | LangChain + Groq LLM      |
-| GitHub Events | Webhooks + REST API       |
-| Deployment    | Ngrok / Render (Local dev)|
+## How It Works
+1. A **GitHub Webhook** triggers when a PR is opened.
+2. The webhook hits the **Flask Middleware** (this repo).
+3. Middleware forwards the PR details (title, description) to the **AI Backend**.
+4. Suggestions (or defaults) are posted as a comment back to the PR using the GitHub API.
 
 ---
 
-## 📁 Folder Structure
-
+## Project Structure
 ```
 
-smaartcommit/
-├── backend/
-│   ├── app.py               # Flask server with webhook
-│   ├── ai\_pipeline.py       # LangChain + Groq logic
-│   ├── .env                 # API keys and secrets
-│   └── requirements.txt     # All dependencies
-├── .gitignore
-└── README.md
+nametodecide/
+├── backend/             # AI suggestion service (runs separately)
+├── middleware/          # Flask app handling GitHub webhooks
+│   ├── app.py           # Main server
+│   ├── requirements.txt # Python dependencies
+│   ├── .env             # Environment variables
+│   └── venv/            # (local environment, ignored)
 
 ````
 
 ---
 
-## ⚙️ Getting Started
+## Prerequisites
+- Python 3.10+
+- `pip` and `virtualenv`
+- GitHub Personal Access Token (with `repo` scope)
+- Ngrok (or any tunnel) for testing locally
 
-### 1️⃣ Clone the Repo
+---
 
+## Setup Instructions
+
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/Samyukta04/nametodecide/tree/main.git
-cd smaartcommit/backend
+git clone https://github.com/Samyukta04/nametodecide.git
+cd nametodecide/middleware
 ````
 
-### 2️⃣ Setup Python Virtual Environment
+### 2. Setup Python Environment
 
 ```bash
 python -m venv venv
-.\venv\Scripts\activate   # Windows
-# or
-source venv/bin/activate  # macOS/Linux
-```
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 
-### 3️⃣ Install Requirements
-
-```bash
 pip install -r requirements.txt
 ```
 
-### 4️⃣ Add `.env` File
+### 3. Add Environment Variables
 
-Create a `.env` file inside the `backend/` folder:
+Create a `.env` file inside `middleware/`:
 
 ```
-GROQ_API_KEY=your_groq_key_here
-GITHUB_TOKEN=your_github_token_here
+GITHUB_TOKEN=<your_personal_access_token>
+BACKEND_URL=http://localhost:5001/generate-messages
 ```
+
+The `GITHUB_TOKEN` must be a Personal Access Token with permissions to comment on PRs in your target repository.
 
 ---
 
-## 🚦 Run the Server
+## Running the Services
+
+### Start the Backend (AI Suggestion Service)
+
+From the `backend/` directory:
 
 ```bash
 python app.py
 ```
 
-By default, the app runs on: [http://127.0.0.1:5001](http://127.0.0.1:5001)
+Runs on `http://localhost:5001` by default.
 
----
+### Start the Middleware
 
-## 🔁 GitHub Webhook Setup
-
-1. Go to your GitHub repo → **Settings → Webhooks → Add Webhook**
-2. **Payload URL**: Your Ngrok or Render link + `/webhook`
-   *Example*: `https://<your-tunnel>.ngrok.io/webhook`
-3. **Content Type**: `application/json`
-4. **Events**: `Just the pull_request event`
-5. Click **Add Webhook**
-
----
-
-## 🧪 Sample Test
-
-You can test using `curl`:
+From the `middleware/` directory:
 
 ```bash
-curl -X POST http://127.0.0.1:5001/generate-messages \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Add login", "description": "Implements JWT-based authentication flow."}'
+python app.py
 ```
 
-✅ Response:
+Runs on `http://localhost:5000` by default.
 
-```json
-{
-  "suggestion": "feat(auth): add JWT-based login and authentication flow"
-}
+### Expose Middleware using Ngrok
+
+```bash
+ngrok http 5000
+```
+
+Copy the forwarding URL (e.g., `https://xxxxx.ngrok-free.app`) — this will be the webhook endpoint.
+
+---
+
+## Setting Up GitHub Webhook
+
+1. Go to your repository → **Settings** → **Webhooks**.
+2. Add a new webhook:
+
+   * **Payload URL**: `https://<ngrok-url>/webhook`
+   * **Content type**: `application/json`
+   * **Select event**: `Pull requests`
+3. Save.
+
+---
+
+## Testing Locally
+
+Manually trigger the webhook using `curl`:
+
+```bash
+curl -X POST https://<ngrok-url>/webhook \
+-H "Content-Type: application/json" \
+-d '{
+  "action": "opened",
+  "repository": { "full_name": "Samyukta04/nametodecide" },
+  "pull_request": {
+    "number": 1,
+    "title": "Add login API",
+    "body": "Implemented JWT authentication and fixed session timeout bug."
+  }
+}'
+```
+
+You should see:
+
+* A response with `"status": "posted"`
+* A comment automatically added to your PR.
+
+---
+
+## Example Output on GitHub PR
+
+```
+_No AI suggestions, here are defaults:_
+- Review code style
+- Add tests
+- Update docs
 ```
 
 ---
 
-## 👥 Team SmaartCommit
+## Deploying / Final Notes
 
-| Name       | Role                    |
-| ---------- | ----------------------- |
-| Samyukta   | Middleware + DevOps     |
-| Teammate 1 | AI Pipeline (LangChain) |
-| Teammate 2 | GitHub Integration      |
-| Teammate 3 | API Testing             |
-| Teammate 4 | Docs + Demo Video       |
+* Make sure **`backend` and `middleware` are both running**.
+* `ngrok` must be active whenever you want GitHub to reach your local server.
+* To deploy permanently, you can host `middleware` and `backend` on any cloud (Heroku, Render, AWS, etc.).
 
 ---
 
-## 🎯 Why SmaartCommit?
+## Branch Info
 
-Because writing meaningful commit messages shouldn’t be hard.
-Let the AI do the smart part, while you focus on writing code. 🧠✨
+* **Main branch** contains the final integrated solution (backend + middleware).
+* Push your work here:
+
+```bash
+git add .
+git commit -m "Final SmartCommit Hackathon Submission"
+git push origin main
+```
 
 ---
 
-## 📜 License
 
-MIT © 2025 Team SmaartCommit
 
