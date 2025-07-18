@@ -16,4 +16,4 @@ async def generate_commit_message(request: Request):
     llm = OpenAI(model="gpt-3.5-turbo")
     message = llm(prompt.format(diff=diff))
 
-    return {"commit_message": message}
+    return {"commit_message": message}
