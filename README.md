@@ -1,8 +1,12 @@
+Absolutely, Sammy! Here's the **copy-paste ready version** of your `README.md` for **SmaartCommit**:
+
+---
 
 ```markdown
 # 🤖 SmaartCommit
 
-> ✨ _"Smarter Commits. Cleaner Code."_  
+> ✨ _"Smarter Commits. Cleaner Code."_
+
 **SmaartCommit** is an AI-powered GitHub middleware that listens to Pull Request events and generates clear, meaningful commit message suggestions using **LangChain** and **Groq LLMs**.
 
 ---
@@ -10,9 +14,10 @@
 ## 🚀 What It Does
 
 Whenever a developer opens or updates a Pull Request, SmaartCommit:
-1. Receives the webhook via a Flask backend
-2. Parses the PR title and description
-3. Sends it to Groq LLM using LangChain
+
+1. Receives the webhook via a Flask backend  
+2. Parses the PR title and description  
+3. Sends it to Groq LLM using LangChain  
 4. Posts a suggested commit message back as a comment on the PR
 
 ---
@@ -143,5 +148,4 @@ Let the AI do the smart part, while you focus on writing code. 🧠✨
 ## 📜 License
 
 Team 16
-
 ```
