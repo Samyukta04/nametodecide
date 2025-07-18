@@ -123,13 +123,13 @@ curl -X POST http://127.0.0.1:5001/generate-messages \
 
 ## 👥 Team SmaartCommit
 
-| Name       | Role                    |
-| ---------- | ----------------------- |
-| Samyukta   | Middleware + DevOps     |
-| Teammate 1 | AI Pipeline (LangChain) |
-| Teammate 2 | GitHub Integration      |
-| Teammate 3 | API Testing             |
-| Teammate 4 | Docs + Demo Video       |
+| Name       | Role                               |
+| ---------- | -----------------------------------|
+| Samyukta   | Middleware + DevOps + Backend      |
+| Abhishek   | AI Pipeline (LangChain) + Demo Video|
+| Aditya     | GitHub Integration                 |
+| Sreeja     | API Testing                        |
+| Adithi     | Docs                               |
 
 ---
 
