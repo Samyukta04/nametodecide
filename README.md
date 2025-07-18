@@ -1,8 +1,3 @@
-Absolutely, Sammy! Here's the **copy-paste ready version** of your `README.md` for **SmaartCommit**:
-
----
-
-```markdown
 # 🤖 SmaartCommit
 
 > ✨ _"Smarter Commits. Cleaner Code."_
