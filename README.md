@@ -51,7 +51,7 @@ smaartcommit/
 ### 1️⃣ Clone the Repo
 
 ```bash
-git clone https://github.com/Samyukta04/smaartcommit.git
+git clone https://github.com/Samyukta04/nametodecide/tree/main.git
 cd smaartcommit/backend
 ````
 
